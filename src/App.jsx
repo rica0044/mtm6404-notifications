@@ -1,34 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import notificationsData from './notifications';
+
+function NotificationCard({ children, onClear }) {
+  return (
+    <div className="card" style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
+      {children}
+      <button onClick={onClear}>Clear</button>
+    </div>
+  );
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [notifications, setNotifications] = useState(notificationsData);
+
+  const clearOne = (id) => {
+    setNotifications(notifications.filter(n => n.id !== id));
+  };
+
+  const clearAll = () => {
+    setNotifications([]);
+  };
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <h1>Notifications Manager</h1>
+      
+      <p>Count: {notifications.length}</p>
+
+      {notifications.map((item) => (
+        <NotificationCard key={item.id} onClear={() => clearOne(item.id)}>
+          <h4>{item.name}</h4>
+          <p>{item.message}</p>
+        </NotificationCard>
+      ))}
+
+      {notifications.length > 0 && (
+        <button onClick={clearAll} style={{ marginTop: '20px', color: 'red' }}>
+          Clear All Notifications
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
